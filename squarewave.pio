@@ -1,0 +1,41 @@
+.program squarewave
+.define public TICKS_PER_LOOP 4     ; instructions per loop (for timing)
+again:
+    set pins, 1 [1]  ; Drive pin high and then delay for one cycle
+    set pins, 0      ; Drive pin low
+    jmp again        ; Set PC to label `again`
+
+
+% c-sdk {
+static inline void squarewave_program_init(PIO pio, uint sm, uint offset, uint pin, float freq) {
+    // Create a new state machine configuration
+    //
+    pio_sm_config c = squarewave_program_get_default_config (offset);
+
+    // Map the SET pin group to one pin, namely the `pin`
+    // parameter to this function.
+    //
+    sm_config_set_set_pins (&c, pin, 1);
+
+    // Set the GPIO function of the pin (connect the PIO to the pad)
+    //
+    pio_gpio_init (pio, pin);
+
+    // Set the pin direction to output at the PIO
+    //
+    pio_sm_set_consecutive_pindirs (pio, sm, pin, 1, true);
+
+    // Set the clock divider to generate the required frequency
+    //
+    float div = clock_get_hz (clk_sys) / (freq * squarewave_TICKS_PER_LOOP);
+    sm_config_set_clkdiv (&c, div);
+
+    // Apply the configuration to the state machine
+    //
+    pio_sm_init (pio, sm, offset, &c);
+
+    // Start the state machine running
+    //
+    pio_sm_set_enabled (pio, sm, true);
+}
+%}
