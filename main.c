@@ -46,8 +46,8 @@ int main() {
     puts ("Initialising PIO state machine");
 
     PIO pio = pio0;
-    //uint output_gpio = LED_PIN;
-    uint output_gpio = 15;
+    uint output_gpio = LED_PIN;
+    //uint output_gpio = 15;
     float freq_hz = 8333;       // square wave freq (min 500Hz)
 
     int squarewave_sm = squarewave_init(pio, output_gpio, freq_hz);
