@@ -21,7 +21,8 @@
             "postRestartCommands": [
                 "break main",
                 "continue"
-            ]
+            ],
+            "searchDir": ["C:/VSARM/sdk/pico/openocd/tcl"],
         }
     ]
 }
